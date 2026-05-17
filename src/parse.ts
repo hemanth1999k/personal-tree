@@ -16,5 +16,11 @@ export async function parseFile(filePath: string): Promise<string> {
     return content.toString('utf-8')
   }
 
-  throw new Error(`Unsupported file type: ${ext}. Supported: .pdf, .txt, .md`)
+  if (ext === '.docx') {
+    const mammoth = await import('mammoth')
+    const result = await mammoth.extractRawText({ buffer: content })
+    return result.value
+  }
+
+  throw new Error(`Unsupported file type: ${ext}. Supported: .pdf, .txt, .md, .docx`)
 }
