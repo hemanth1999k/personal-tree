@@ -7,13 +7,14 @@
     "dev": "tsx src/cli.ts",
     "start": "node dist/cli.js"
   },
-  "keywords": ["knowledge", "obsidian", "pdf", "local-ai", "ollama", "second-brain"],
-  "engines": { "node": ">=18" },
+  "keywords": [],
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hemanth1999k/personal-tree.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -29,6 +30,7 @@
     "@anthropic-ai/sdk": "^0.96.0",
     "@types/node": "^25.8.0",
     "commander": "^14.0.3",
+    "mammoth": "^1.12.0",
     "ora": "^9.4.0",
     "pdf-parse": "^2.4.5",
     "typescript": "^6.0.3"

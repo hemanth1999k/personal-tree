@@ -52,6 +52,7 @@ personal-tree ingest yourfile.pdf
 personal-tree ingest paper.pdf
 personal-tree ingest notes.txt
 personal-tree ingest article.md
+personal-tree ingest report.docx
 
 # Custom vault location
 personal-tree ingest paper.pdf --vault ~/my-obsidian-vault
