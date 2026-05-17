@@ -1,0 +1,40 @@
+{
+  "name": "personal-tree",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js"
+  },
+  "keywords": ["knowledge", "obsidian", "pdf", "local-ai", "ollama", "second-brain"],
+  "engines": { "node": ">=18" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemanth1999k/personal-tree.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hemanth1999k/personal-tree/issues"
+  },
+  "homepage": "https://github.com/hemanth1999k/personal-tree#readme",
+  "description": "Turn any PDF or text into a structured personal knowledge tree. Local. Offline. Yours.",
+  "bin": {
+    "personal-tree": "./dist/cli.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
+    "@types/node": "^25.8.0",
+    "commander": "^14.0.3",
+    "ora": "^9.4.0",
+    "pdf-parse": "^2.4.5",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/pdf-parse": "^1.1.5",
+    "tsx": "^4.22.1"
+  }
+}
