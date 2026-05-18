@@ -1,21 +1,33 @@
-# 🌳 personal-tree
+# 🌳 Personal Tree
 
-> Your personal knowledge vault — so your AI agents always know what you know.
+> The simplest way to turn your files into AI memory. Inspired by Karpathy. No desktop app. No account. One command.
 
-Drop any file. Get a structured, growing knowledge base your AI agents can actually read and reference. No account. No cloud. No setup beyond 2 commands.
+Drop any file. Get a structured, growing knowledge vault your AI agents can actually read and reference.
 
 ```bash
 npx personal-tree ingest research-paper.pdf
 ```
 
-The real power isn't the Markdown files — it's that your vault becomes a **persistent memory layer** for any AI agent you use. Instead of pasting documents into every chat, your agents already know everything you've ingested. Point Claude Code, Cursor, or any AI at your vault and it instantly has context across all your knowledge.
+**Personal Tree is not an agent. It's the memory layer your agents read from.**
+
+Instead of pasting documents into every chat, ingest them once. Point Claude Code, Cursor, or any AI at your vault and it instantly has context across everything you've ever ingested.
+
+---
+
+## Philosophy
+
+Andrej Karpathy tweeted about using an Obsidian wiki as a personal knowledge base — structured Markdown files your AI can read and reason over. OpenHuman built a whole agent harness around that idea.
+
+Personal Tree asks: what's the smallest possible version of that?
+
+No desktop app. No integrations. No account. Just drop a file and get a structured vault your existing AI tools can read. Your knowledge should be local, yours, and always accessible to the agents you already use.
 
 ---
 
 ## How it works
 
 ```
-Your file (PDF / .txt / .md)
+Your file (PDF / .txt / .md / .docx)
        ↓
   Chunks the text
        ↓
@@ -25,7 +37,7 @@ Your file (PDF / .txt / .md)
        ↓
   Writes structured Markdown to your vault
        ↓
-  Open in Obsidian — explore your knowledge graph
+  Point any AI agent at the folder — done
 ```
 
 ---
@@ -33,7 +45,7 @@ Your file (PDF / .txt / .md)
 ## Install
 
 ```bash
-# Run directly (no install)
+# Run directly (no global install needed)
 npx personal-tree ingest yourfile.pdf
 
 # Or install globally
@@ -55,14 +67,36 @@ personal-tree ingest article.md
 personal-tree ingest report.docx
 
 # Custom vault location
-personal-tree ingest paper.pdf --vault ~/my-obsidian-vault
+personal-tree ingest paper.pdf --vault ~/my-vault
 ```
 
-### Check your tree stats
+### Check your vault stats
 ```bash
 personal-tree status
-personal-tree status --vault ~/my-obsidian-vault
+personal-tree status --vault ~/my-vault
 ```
+
+---
+
+## Your vault is just a folder
+
+No database. No proprietary format. Just plain Markdown files on your machine:
+
+```
+vault/
+├── index.md              ← full knowledge index
+├── topics/
+│   ├── machine-learning.md
+│   └── neural-networks.md
+└── concepts/
+    ├── transformer-architecture.md
+    ├── attention-mechanism.md
+    └── backpropagation.md
+```
+
+Open it in VS Code, Finder, or any text editor. Use Obsidian if you want the visual graph. Works either way — Obsidian is optional.
+
+Every file uses wikilinks (`[[concept-name]]`) so Obsidian's graph view lights up automatically.
 
 ---
 
@@ -80,7 +114,7 @@ ollama pull llama3
 # Start Ollama
 ollama serve
 
-# Run personal-tree — it auto-detects Ollama
+# Run Personal Tree — it auto-detects Ollama
 personal-tree ingest yourfile.pdf
 ```
 
@@ -90,31 +124,13 @@ export ANTHROPIC_API_KEY=your_key_here
 personal-tree ingest yourfile.pdf
 ```
 
-personal-tree automatically uses Claude API if `ANTHROPIC_API_KEY` is set, otherwise falls back to Ollama.
-
----
-
-## Output structure
-
-```
-vault/
-├── index.md              ← your growing knowledge index
-├── topics/
-│   ├── machine-learning.md
-│   └── neural-networks.md
-└── concepts/
-    ├── transformer-architecture.md
-    ├── attention-mechanism.md
-    └── backpropagation.md
-```
-
-Every file uses Obsidian wikilinks (`[[concept-name]]`) so your graph view lights up automatically.
+Personal Tree automatically uses Claude API if `ANTHROPIC_API_KEY` is set, otherwise falls back to Ollama.
 
 ---
 
 ## Use your vault as AI agent memory
 
-Once your vault is built, point any AI tool at it. Your agents now have instant context across everything you've ever ingested.
+Once your vault is built, point any AI tool at it.
 
 ---
 
@@ -146,8 +162,6 @@ Then just talk to Claude Code naturally:
 
 ### Cursor / VS Code
 
-Add your vault path to Cursor's context:
-
 1. Open Cursor Settings → Features → Docs
 2. Add your vault path: `~/vault`
 3. Cursor indexes all `.md` files and uses them in every chat
@@ -157,27 +171,26 @@ Add your vault path to Cursor's context:
 ### Any AI with file access (ChatGPT, Claude.ai)
 
 ```bash
-# Export your full index as a single context file
+# Export your full vault as a single context file
 cat ~/vault/index.md ~/vault/topics/*.md ~/vault/concepts/*.md > my-knowledge-context.txt
 ```
 
-Paste or upload `my-knowledge-context.txt` to any AI chat. It now has your full knowledge base as context.
+Paste or upload `my-knowledge-context.txt` to any AI chat.
 
 ---
 
-### Custom agent / MCP server (advanced)
+### Custom agent / MCP server
 
-Point any MCP-compatible agent at your vault folder — it's all plain Markdown, so any tool that can read files can use it as a knowledge source.
+It's all plain Markdown — any MCP-compatible agent or tool that can read files can use your vault as a knowledge source.
 
 ```bash
-# Your vault is just files — any agent can read it
 ls ~/vault/concepts/    # individual concept files
 cat ~/vault/index.md    # full knowledge index
 ```
 
 ---
 
-### Who gets the most value
+## Who gets the most value
 
 | User | What they ingest | What their agent can answer |
 |---|---|---|
@@ -189,28 +202,34 @@ cat ~/vault/index.md    # full knowledge index
 
 ---
 
-## Why not NotebookLM / Mem / Notion AI?
+## Personal Tree vs other tools
 
-| | personal-tree | NotebookLM | Mem | OpenHuman |
+| | Personal Tree | OpenHuman | NotebookLM | Mem |
 |---|---|---|---|---|
-| Local / offline | ✅ | ❌ | ❌ | ✅ |
+| **What it is** | Memory layer | Agent harness | Chat with docs | AI notes app |
 | No account needed | ✅ | ❌ | ❌ | ❌ |
-| Obsidian output | ✅ | ❌ | ❌ | ✅ |
-| Just a file drop | ✅ | ✅ | ❌ | ❌ |
-| No heavy install | ✅ | ✅ | ✅ | ❌ |
-| Growing tree | ✅ | ❌ | ✅ | ✅ |
+| Local / offline | ✅ | ✅ | ❌ | ❌ |
+| No desktop app | ✅ | ❌ | ✅ | ✅ |
+| Agents can read it | ✅ | ✅ | ❌ | ❌ |
+| Plain files (portable) | ✅ | ✅ | ❌ | ❌ |
+| Just file ingestion | ✅ | ❌ | ✅ | ❌ |
+| No integrations to set up | ✅ | ❌ | ✅ | ✅ |
+
+OpenHuman is powerful and shares the same Karpathy-inspired Obsidian vault idea — but it's a full desktop agent harness with 118+ integrations. Personal Tree is just the memory layer, nothing more.
 
 ---
 
 ## Roadmap
 
 - [x] PDF / txt / md ingestion
+- [x] .docx ingestion
 - [x] Ollama (local) + Claude API support
 - [x] Obsidian-compatible Markdown output
 - [x] Growing tree (merge on re-ingest)
-- [ ] Web UI (drag and drop, no CLI needed)
+- [ ] `personal-tree search <query>` — keyword search across vault
+- [ ] `personal-tree export` — dump vault to single file for any AI
 - [ ] URL ingestion
-- [ ] Semantic search across vault
+- [ ] Web UI (drag and drop, no CLI needed)
 - [ ] Watch folder (auto-ingest new files)
 - [ ] Voice input
 
