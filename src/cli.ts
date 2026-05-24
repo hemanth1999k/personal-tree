@@ -3,6 +3,7 @@ import { Command } from 'commander'
 import path from 'path'
 import fs from 'fs'
 import { ingest } from './ingest.js'
+import { searchVault } from './search.js'
 
 const program = new Command()
 
@@ -57,6 +58,15 @@ program
     console.log(`   📁 Vault:    ${vaultPath}`)
     console.log(`   🏷️  Topics:   ${topics}`)
     console.log(`   💡 Concepts: ${concepts}\n`)
+  })
+
+program
+  .command('search <query>')
+  .description('Search your knowledge tree by keyword')
+  .option('-v, --vault <path>', 'Path to your vault folder', './vault')
+  .action((query: string, options: { vault: string }) => {
+    const vaultPath = path.resolve(options.vault)
+    searchVault(vaultPath, query)
   })
 
 program.parse()
