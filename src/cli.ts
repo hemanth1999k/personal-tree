@@ -4,6 +4,7 @@ import path from 'path'
 import fs from 'fs'
 import { ingest } from './ingest.js'
 import { searchVault } from './search.js'
+import { exportVault } from './export.js'
 
 const program = new Command()
 
@@ -67,6 +68,16 @@ program
   .action((query: string, options: { vault: string }) => {
     const vaultPath = path.resolve(options.vault)
     searchVault(vaultPath, query)
+  })
+
+program
+  .command('export')
+  .description('Export your full knowledge vault to a single context file')
+  .option('-v, --vault <path>', 'Path to your vault folder', './vault')
+  .option('-o, --output <path>', 'Path to the output file', './vault-export.md')
+  .action((options: { vault: string; output: string }) => {
+    const vaultPath = path.resolve(options.vault)
+    exportVault(vaultPath, options.output)
   })
 
 program.parse()
