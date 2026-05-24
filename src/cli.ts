@@ -18,10 +18,11 @@ program
   .description('Ingest a file and build your knowledge tree')
   .option('-v, --vault <path>', 'Path to your vault folder', './vault')
   .action(async (file: string, options: { vault: string }) => {
-    const filePath = path.resolve(file)
+    const isUrl = file.startsWith('http://') || file.startsWith('https://')
+    const filePath = isUrl ? file : path.resolve(file)
     const vaultPath = path.resolve(options.vault)
 
-    if (!fs.existsSync(filePath)) {
+    if (!isUrl && !fs.existsSync(filePath)) {
       console.error(`❌ File not found: ${filePath}`)
       process.exit(1)
     }
@@ -29,7 +30,7 @@ program
     fs.mkdirSync(vaultPath, { recursive: true })
 
     console.log(`\n🌳 personal-tree`)
-    console.log(`   File:  ${filePath}`)
+    console.log(`   ${isUrl ? 'URL' : 'File'}:  ${filePath}`)
     console.log(`   Vault: ${vaultPath}`)
     console.log(`   LLM:   ${process.env.ANTHROPIC_API_KEY ? 'Claude API' : 'Ollama (local)'}\n`)
 

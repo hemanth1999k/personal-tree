@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import type { Extraction } from './llm.js'
+import { urlToFilenameSlug } from './url.js'
 
 export function buildTree(vaultPath: string, extractions: Extraction[], sourceFile: string): void {
   fs.mkdirSync(path.join(vaultPath, 'topics'), { recursive: true })
@@ -53,10 +54,13 @@ function mergeConceptFile(
   related: string[],
   source: string
 ): string {
+  const isUrl = source.startsWith('http://') || source.startsWith('https://')
+  const sourceRefName = isUrl ? urlToFilenameSlug(source) : path.basename(source, path.extname(source))
+
   if (existing) {
     // Append new source reference if not already there
-    if (!existing.includes(source)) {
-      return existing + `\n> Also referenced in: [[${path.basename(source, path.extname(source))}]]\n`
+    if (!existing.includes(sourceRefName)) {
+      return existing + `\n> Also referenced in: [[${sourceRefName}]]\n`
     }
     return existing
   }
@@ -67,7 +71,7 @@ function mergeConceptFile(
 ${definition}
 
 ## Sources
-- [[${path.basename(source, path.extname(source))}]]
+- [[${sourceRefName}]]
 
 ## Related Concepts
 ${relatedLinks || '_None yet_'}
@@ -80,9 +84,12 @@ function mergeTopicFile(
   concepts: string[],
   source: string
 ): string {
+  const isUrl = source.startsWith('http://') || source.startsWith('https://')
+  const sourceRefName = isUrl ? urlToFilenameSlug(source) : path.basename(source, path.extname(source))
+
   if (existing) {
-    if (!existing.includes(source)) {
-      return existing + `\n> Also covered in: [[${path.basename(source, path.extname(source))}]]\n`
+    if (!existing.includes(sourceRefName)) {
+      return existing + `\n> Also covered in: [[${sourceRefName}]]\n`
     }
     return existing
   }
@@ -91,7 +98,7 @@ function mergeTopicFile(
   return `# ${topic}
 
 ## Sources
-- [[${path.basename(source, path.extname(source))}]]
+- [[${sourceRefName}]]
 
 ## Concepts in this Topic
 ${conceptLinks || '_None yet_'}
@@ -108,7 +115,8 @@ function updateIndex(
   const indexPath = path.join(vaultPath, 'index.md')
   const existing = fs.existsSync(indexPath) ? fs.readFileSync(indexPath, 'utf-8') : ''
 
-  const sourceName = path.basename(sourceFile, path.extname(sourceFile))
+  const isUrl = sourceFile.startsWith('http://') || sourceFile.startsWith('https://')
+  const sourceName = isUrl ? urlToFilenameSlug(sourceFile) : path.basename(sourceFile, path.extname(sourceFile))
   const summary = extractions[0]?.summary ?? ''
   const topicLinks = [...topics].map(t => `  - [[topics/${slugify(t)}|${t}]]`).join('\n')
   const conceptLinks = [...concepts.keys()].map(c => `  - [[concepts/${slugify(c)}|${c}]]`).join('\n')
