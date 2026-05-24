@@ -1,5 +1,6 @@
 import ora from 'ora'
 import { parseFile } from './parse.js'
+import { fetchUrlContent } from './url.js'
 import { chunkText } from './chunk.js'
 import { extract } from './llm.js'
 import { buildTree } from './tree.js'
@@ -8,9 +9,11 @@ import type { Extraction } from './llm.js'
 export async function ingest(filePath: string, vaultPath: string): Promise<void> {
   const spinner = ora()
 
-  spinner.start('Reading file...')
-  const text = await parseFile(filePath)
-  spinner.succeed(`Read ${text.length.toLocaleString()} characters`)
+  const isUrl = filePath.startsWith('http://') || filePath.startsWith('https://')
+
+  spinner.start(isUrl ? 'Fetching URL...' : 'Reading file...')
+  const text = isUrl ? await fetchUrlContent(filePath) : await parseFile(filePath)
+  spinner.succeed(isUrl ? `Fetched URL (${text.length.toLocaleString()} characters)` : `Read ${text.length.toLocaleString()} characters`)
 
   spinner.start('Chunking text...')
   const chunks = chunkText(text)
